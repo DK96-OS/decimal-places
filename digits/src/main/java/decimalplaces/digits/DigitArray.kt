@@ -1,5 +1,7 @@
-package decimalplaces.decimals
+package decimalplaces.digits
 
+/** Manages an Array of Digits.
+ */
 class DigitArray(
     /** An array of digit values.
      */
