@@ -1,0 +1,41 @@
+# This workflow tests master branch pushes and pull requests
+
+name: CI Run
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+      - 'release*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    
+    name: CI Run
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        java-version: 17
+        distribution: 'temurin'
+        cache: 'gradle'
+    
+    - name: Build Source
+      run: ./gradlew assemble --warn
+      timeout-minutes: 4
+    
+    - name: Build Test Classes
+      run: ./gradlew testClasses --warn
+      timeout-minutes: 3
+  
+  test:
+    needs: build
+    uses: ./.github/workflows/test_report.yml
+    if: success()
