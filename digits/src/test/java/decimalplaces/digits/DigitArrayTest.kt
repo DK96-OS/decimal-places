@@ -1,4 +1,4 @@
-package decimalplaces.decimals
+package decimalplaces.digits
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
