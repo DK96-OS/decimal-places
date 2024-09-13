@@ -68,6 +68,32 @@ class TestDigitArray {
     }
 
     @Test
+    fun testPlus_() {
+        val operand1 = DigitArray(byteArrayOf(7, 5))
+        val operand2 = DigitArray(byteArrayOf(8, 5))
+        val result = operand1 + operand2
+        assertEquals(
+            3, result.size
+        )
+        assertEquals(1, result.digits[0])
+        assertEquals(6, result.digits[1])
+        assertEquals(0, result.digits[2])
+    }
+
+    @Test
+    fun testPlus2() {
+        val operand1 = DigitArray(byteArrayOf(7, 5))
+        val operand2 = DigitArray(byteArrayOf(8, 5))
+        val result = operand1 + operand2
+        assertEquals(
+            3, result.size
+        )
+        assertEquals(1, result.digits[0])
+        assertEquals(6, result.digits[1])
+        assertEquals(0, result.digits[2])
+    }
+
+    @Test
     fun testMinus_Simple1_ReturnsValid() {
         val simple1 = DigitArray(byteArrayOf(1))
         val simple2 = DigitArray(byteArrayOf(2))
