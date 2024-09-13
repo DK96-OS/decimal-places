@@ -7,6 +7,9 @@ class DigitArray(
      */
     val digits: ByteArray
 ) {
+    /** The Size of the Array.
+     */
+    val size: Int = digits.size
 
     operator fun get(index: Int): Byte {
         require(index >= 0 && index < digits.size)
@@ -80,10 +83,15 @@ class DigitArray(
         val firstValue = result[0]
         val diff = firstValue - other.digits[0]
         if (firstValue < 0 || diff < 0) {
-            throw IllegalStateException()
+            result[0] = (10 + diff).toByte()
+            val newArray = ByteArray(newSize + 1) {
+                if (it == 0) -1 else result[it - 1]
+            }
+            return DigitArray(newArray)
+        } else {
+            result[0] = diff.toByte()
+            return DigitArray(result)
         }
-        result[0] = diff.toByte()
-        return DigitArray(result)
     }
 
     /** Remove the Trailing Zeros at the end of the Array.
@@ -95,6 +103,22 @@ class DigitArray(
             if (digits[trimIndex] != 0.toByte()) {
                 return if (trimIndex < initialSize) {
                     DigitArray(digits.copyOf(trimIndex + 1))
+                } else
+                    this
+            }
+        }
+        return DigitArray(byteArrayOf(0))
+    }
+
+    /** Remove the Leading Zeros at the start of the Array.
+     */
+    fun trimLeadingZeros()
+        : DigitArray {
+        val initialZerothIndex = size - 1
+        for (trimIndex in digits.indices) {
+            if (digits[trimIndex] != 0.toByte()) {
+                return if (trimIndex < initialZerothIndex) {
+                    DigitArray(digits.copyOfRange(trimIndex, size))
                 } else
                     this
             }
