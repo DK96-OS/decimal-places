@@ -123,6 +123,35 @@ class TestDigitArray {
         assertEquals(9, result.digits[2])
     }
 
+
+    @Test
+    fun testMinus_BorrowingAtZerothIndex() {
+        val operand1 = DigitArray(byteArrayOf(1, 2, 6))
+        val operand2 = DigitArray(byteArrayOf(3, 0, 7))
+        val result = operand1 - operand2
+        assertEquals(
+            4, result.size
+        )
+        assertEquals(-1, result.digits[0])
+        assertEquals(8, result.digits[1])
+        assertEquals(1, result.digits[2])
+        assertEquals(9, result.digits[3])
+    }
+
+    @Test
+    fun testMinus_BorrowingMultipleColumns() {
+        val operand1 = DigitArray(byteArrayOf(1, 0, 6))
+        val operand2 = DigitArray(byteArrayOf(5, 0, 7))
+        val result = operand1 - operand2
+        assertEquals(
+            4, result.size
+        )
+        assertEquals(-1, result.digits[0])
+        assertEquals(5, result.digits[1])
+        assertEquals(9, result.digits[2])
+        assertEquals(9, result.digits[3])
+    }
+
     @Test
     fun testMinus_Borrowing_ReturnsValidDifference() {
         mInstance = DigitArray(byteArrayOf(1, 0, 4))
@@ -149,15 +178,9 @@ class TestDigitArray {
         assertEquals(
             3, mInstance.digits.size
         )
-        assertEquals(
-            1, mInstance.digits[0]
-        )
-        assertEquals(
-            0, mInstance.digits[1]
-        )
-        assertEquals(
-            2, mInstance.digits[2]
-        )
+        assertEquals(1, mInstance.digits[0])
+        assertEquals(0, mInstance.digits[1])
+        assertEquals(2, mInstance.digits[2])
     }
 
     @Test
@@ -167,9 +190,38 @@ class TestDigitArray {
         assertEquals(
             1, mInstance.digits.size
         )
+        assertEquals(0, mInstance.digits[0])
+    }
+
+    @Test
+    fun trimLeadingZeros_() {
+        mInstance = DigitArray(byteArrayOf(1, 0))
+        mInstance = mInstance.trimLeadingZeros()
         assertEquals(
-            0, mInstance.digits[0]
+            2, mInstance.digits.size
         )
+    }
+
+    @Test
+    fun trimLeadingZeros_2() {
+        mInstance = DigitArray(byteArrayOf(0, 1, 2, 0))
+        mInstance = mInstance.trimLeadingZeros()
+        assertEquals(
+            3, mInstance.digits.size
+        )
+        assertEquals(1, mInstance.digits[0])
+        assertEquals(2, mInstance.digits[1])
+        assertEquals(0, mInstance.digits[2])
+    }
+
+    @Test
+    fun trimLeadingZeros_AllZero3() {
+        mInstance = DigitArray(byteArrayOf(0, 0, 0))
+        mInstance = mInstance.trimLeadingZeros()
+        assertEquals(
+            1, mInstance.digits.size
+        )
+        assertEquals(0, mInstance.digits[0])
     }
 
 }
