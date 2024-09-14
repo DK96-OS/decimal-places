@@ -29,9 +29,20 @@ class DigitArray(
 
     operator fun plus(other: DigitArray): DigitArray {
         val newSize = maxOf(digits.size, other.digits.size)
-        val result = ByteArray(newSize) {
-            (digits[it] + other.digits[it]).toByte()
-        }
+        val result = if (digits.size > other.digits.size)
+            ByteArray(newSize) {
+                if (it < other.digits.size) (digits[it] + other.digits[it]).toByte()
+                else digits[it]
+            }
+        else if (digits.size == other.digits.size)
+            ByteArray(newSize) {
+                (digits[it] + other.digits[it]).toByte()
+            }
+        else
+            ByteArray(newSize) {
+                if (it < digits.size) (digits[it] + other.digits[it]).toByte()
+                else other.digits[it]
+            }
         for (i in newSize - 1 downTo 1) {
             val digitValue = result[i]
             if (digitValue > 9) {

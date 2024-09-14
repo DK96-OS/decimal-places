@@ -94,6 +94,46 @@ class TestDigitArray {
     }
 
     @Test
+    fun testPlus_DifferentSizesA1B2() {
+        val operand1 = DigitArray(byteArrayOf(7,))
+        val operand2 = DigitArray(byteArrayOf(8, 5))
+        val result = operand1 + operand2
+        assertEquals(
+            3, result.size
+        )
+        assertEquals(1, result.digits[0])
+        assertEquals(5, result.digits[1])
+        assertEquals(5, result.digits[2])
+    }
+
+    @Test
+    fun testPlus_DifferentSizesA2B1() {
+        val operand1 = DigitArray(byteArrayOf(6, 4))
+        val operand2 = DigitArray(byteArrayOf(5,))
+        val result = operand1 + operand2
+        assertEquals(
+            3, result.size
+        )
+        assertEquals(1, result.digits[0])
+        assertEquals(1, result.digits[1])
+        assertEquals(4, result.digits[2])
+    }
+
+    @Test
+    fun testPlus_DifferentSizesA2B3() {
+        val operand1 = DigitArray(byteArrayOf(6, 4))
+        val operand2 = DigitArray(byteArrayOf(5, 7, 8))
+        val result = operand1 + operand2
+        assertEquals(
+            4, result.size
+        )
+        assertEquals(1, result.digits[0])
+        assertEquals(2, result.digits[1])
+        assertEquals(1, result.digits[2])
+        assertEquals(8, result.digits[3])
+    }
+
+    @Test
     fun testMinus_Simple1_ReturnsValid() {
         val simple1 = DigitArray(byteArrayOf(1))
         val simple2 = DigitArray(byteArrayOf(2))
@@ -183,9 +223,50 @@ class TestDigitArray {
         mInstance = DigitArray(byteArrayOf(1, 0, 4))
         val subtractOperand = DigitArray(byteArrayOf(0, 2, 5))
         val result = mInstance - subtractOperand
+        assertEquals(
+            3, result.size
+        )
         assertEquals(0, result.digits[0])
         assertEquals(7, result.digits[1])
         assertEquals(9, result.digits[2])
+    }
+
+    @Test
+    fun testMinus_DifferentSizesA1B2_ReturnsValid() {
+        val operand1 = DigitArray(byteArrayOf(4))
+        val operand2 = DigitArray(byteArrayOf(2, 5))
+        val result = operand1 - operand2
+        assertEquals(
+            2, result.size
+        )
+        assertEquals(1, result.digits[0])
+        assertEquals(5, result.digits[1])
+    }
+
+    @Test
+    fun testMinus_DifferentSizesA1B2_IncludingBorrow_ReturnsBorrowStart() {
+        val operand1 = DigitArray(byteArrayOf(4))
+        val operand2 = DigitArray(byteArrayOf(7, 5))
+        val result = operand1 - operand2
+        assertEquals(
+            3, result.size
+        )
+        assertEquals(-1, result.digits[0])
+        assertEquals(6, result.digits[1])
+        assertEquals(5, result.digits[2])
+    }
+
+    @Test
+    fun testMinus_DifferentSizesA2B1_IncludingBorrow_ReturnsBorrowStart() {
+        val operand1 = DigitArray(byteArrayOf(4, 7))
+        val operand2 = DigitArray(byteArrayOf(5))
+        val result = operand1 - operand2
+        assertEquals(
+            3, result.size
+        )
+        assertEquals(-1, result.digits[0])
+        assertEquals(9, result.digits[1])
+        assertEquals(7, result.digits[2])
     }
 
     @Test
