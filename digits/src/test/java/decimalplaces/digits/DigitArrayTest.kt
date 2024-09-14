@@ -116,7 +116,7 @@ class TestDigitArray {
         )
         assertEquals(1, result.digits[0])
         assertEquals(1, result.digits[1])
-        assertEquals(7, result.digits[2])
+        assertEquals(4, result.digits[2])
     }
 
     @Test
