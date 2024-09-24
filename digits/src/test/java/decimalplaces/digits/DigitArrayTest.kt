@@ -1,7 +1,9 @@
 package decimalplaces.digits
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -73,11 +75,10 @@ class TestDigitArray {
         val operand2 = DigitArray(byteArrayOf(8, 5))
         val result = operand1 + operand2
         assertEquals(
-            3, result.size
+            2, result.size
         )
-        assertEquals(1, result.digits[0])
-        assertEquals(6, result.digits[1])
-        assertEquals(0, result.digits[2])
+        assertEquals(16, result.digits[0])
+        assertEquals(0, result.digits[1])
     }
 
     @Test
@@ -86,11 +87,12 @@ class TestDigitArray {
         val operand2 = DigitArray(byteArrayOf(8, 5))
         val result = operand1 + operand2
         assertEquals(
-            3, result.size
+            2, result.size
         )
-        assertEquals(1, result.digits[0])
-        assertEquals(6, result.digits[1])
-        assertEquals(0, result.digits[2])
+        assertEquals(16, result.digits[0])
+        assertEquals(0, result.digits[1])
+        //
+        assertTrue(result.isLeadDigitOverflowing())
     }
 
     @Test
@@ -99,11 +101,10 @@ class TestDigitArray {
         val operand2 = DigitArray(byteArrayOf(8, 5))
         val result = operand1 + operand2
         assertEquals(
-            3, result.size
+            2, result.size
         )
-        assertEquals(1, result.digits[0])
+        assertEquals(15, result.digits[0])
         assertEquals(5, result.digits[1])
-        assertEquals(5, result.digits[2])
     }
 
     @Test
@@ -112,11 +113,10 @@ class TestDigitArray {
         val operand2 = DigitArray(byteArrayOf(5,))
         val result = operand1 + operand2
         assertEquals(
-            3, result.size
+            2, result.size
         )
-        assertEquals(1, result.digits[0])
-        assertEquals(1, result.digits[1])
-        assertEquals(4, result.digits[2])
+        assertEquals(11, result.digits[0])
+        assertEquals(4, result.digits[1])
     }
 
     @Test
@@ -125,12 +125,11 @@ class TestDigitArray {
         val operand2 = DigitArray(byteArrayOf(5, 7, 8))
         val result = operand1 + operand2
         assertEquals(
-            4, result.size
+            3, result.size
         )
-        assertEquals(1, result.digits[0])
-        assertEquals(2, result.digits[1])
-        assertEquals(1, result.digits[2])
-        assertEquals(8, result.digits[3])
+        assertEquals(12, result.digits[0])
+        assertEquals(1, result.digits[1])
+        assertEquals(8, result.digits[2])
     }
 
     @Test
@@ -196,12 +195,15 @@ class TestDigitArray {
         val operand2 = DigitArray(byteArrayOf(3, 0, 7))
         val result = operand1 - operand2
         assertEquals(
-            4, result.size
+            3, result.size
         )
-        assertEquals(-1, result.digits[0])
-        assertEquals(8, result.digits[1])
-        assertEquals(1, result.digits[2])
-        assertEquals(9, result.digits[3])
+        assertTrue(result.isLeadDigitOverflowing())
+        assertEquals(
+            -1, result.collectOverflowFromLeadDigit()
+        )
+        assertEquals(8, result.digits[0])
+        assertEquals(1, result.digits[1])
+        assertEquals(9, result.digits[2])
     }
 
     @Test
@@ -210,12 +212,16 @@ class TestDigitArray {
         val operand2 = DigitArray(byteArrayOf(5, 0, 7))
         val result = operand1 - operand2
         assertEquals(
-            4, result.size
+            3, result.size
         )
-        assertEquals(-1, result.digits[0])
-        assertEquals(5, result.digits[1])
+        assertTrue(result.isLeadDigitOverflowing())
+        //assertEquals(-15, result.digits[0])
+        assertEquals(
+            -1, result.collectOverflowFromLeadDigit()
+        )
+        assertEquals(5, result.digits[0])
+        assertEquals(9, result.digits[1])
         assertEquals(9, result.digits[2])
-        assertEquals(9, result.digits[3])
     }
 
     @Test
@@ -249,11 +255,14 @@ class TestDigitArray {
         val operand2 = DigitArray(byteArrayOf(7, 5))
         val result = operand1 - operand2
         assertEquals(
-            3, result.size
+            2, result.size
         )
-        assertEquals(-1, result.digits[0])
-        assertEquals(6, result.digits[1])
-        assertEquals(5, result.digits[2])
+        assertTrue(result.isLeadDigitOverflowing())
+        assertEquals(
+            -1, result.collectOverflowFromLeadDigit()
+        )
+        assertEquals(6, result.digits[0])
+        assertEquals(5, result.digits[1])
     }
 
     @Test
@@ -262,11 +271,109 @@ class TestDigitArray {
         val operand2 = DigitArray(byteArrayOf(5))
         val result = operand1 - operand2
         assertEquals(
+            2, result.size
+        )
+        assertTrue(result.isLeadDigitOverflowing())
+        assertEquals(
+            -1, result.collectOverflowFromLeadDigit()
+        )
+        assertEquals(9, result.digits[0])
+        assertEquals(7, result.digits[1])
+    }
+
+    @Test
+    fun testMinus_KeyUseCase_() {
+        val operand1 = DigitArray(byteArrayOf(0, 1))
+        val operand2 = DigitArray(byteArrayOf(0, 2))
+        mInstance = operand1 - operand2
+        assertEquals(
+            2, mInstance.size
+        )
+        assertTrue(mInstance.isLeadDigitOverflowing())
+        assertEquals(
+            -1, mInstance.collectOverflowFromLeadDigit()
+        )
+        assertEquals(9, mInstance.digits[0])
+        assertEquals(9, mInstance.digits[1])
+    }
+
+    @Test
+    fun testMinus_KeyUseCase2_() {
+        val operand1 = DigitArray(byteArrayOf(0, 0, 1))
+        val operand2 = DigitArray(byteArrayOf(0, 0, 2))
+        val result = operand1 - operand2
+        assertEquals(
             3, result.size
         )
-        assertEquals(-1, result.digits[0])
+        assertTrue(result.isLeadDigitOverflowing())
+        assertEquals(
+            -1, result.collectOverflowFromLeadDigit()
+        )
+        assertEquals(9, result.digits[0])
         assertEquals(9, result.digits[1])
-        assertEquals(7, result.digits[2])
+        assertEquals(9, result.digits[2])
+    }
+
+    @Test
+    fun testMinus_KeyUseCase3_() {
+        val operand1 = DigitArray(byteArrayOf(0, 0, 0))
+        val operand2 = DigitArray(byteArrayOf(0, 0, 9))
+        val result = operand1 - operand2
+        assertEquals(
+            3, result.size
+        )
+        assertTrue(result.isLeadDigitOverflowing())
+        assertEquals(
+            -1, result.collectOverflowFromLeadDigit()
+        )
+        assertEquals(9, result.digits[0])
+        assertEquals(9, result.digits[1])
+        assertEquals(1, result.digits[2])
+    }
+
+    @Test
+    fun testMinus_KeyUseCase3_DifferentSizeArrays() {
+        val operand1 = DigitArray(byteArrayOf(0))
+        val operand2 = DigitArray(byteArrayOf(0, 0, 9))
+        val result = operand1 - operand2
+        assertEquals(
+            3, result.size
+        )
+        assertTrue(result.isLeadDigitOverflowing())
+        assertEquals(
+            -1, result.collectOverflowFromLeadDigit()
+        )
+        assertEquals(9, result.digits[0])
+        assertEquals(9, result.digits[1])
+        assertEquals(1, result.digits[2])
+    }
+
+    @Test
+    fun testCollectOverflowFromLeadDigit_InitialCondition_Returns0() {
+        val result = mInstance.collectOverflowFromLeadDigit()
+        assertFalse(mInstance.isLeadDigitOverflowing())
+        assertEquals(0, result)
+    }
+
+    @Test
+    fun testCollectOverflowFromLeadDigit_PlusWithCarry_Returns1() {
+        val result = DigitArray(byteArrayOf(4)) + DigitArray(byteArrayOf(8))
+        assertTrue(result.isLeadDigitOverflowing())
+        assertEquals(1, result.collectOverflowFromLeadDigit())
+    }
+
+    @Test
+    fun testCollectOverflowFromLeadDigit_MinusWithBorrow_ReturnsNegative1() {
+        val result = DigitArray(byteArrayOf(4)) - DigitArray(byteArrayOf(8))
+        assertTrue(result.isLeadDigitOverflowing())
+        assertEquals(-1, result.collectOverflowFromLeadDigit())
+    }
+
+    @Test
+    fun testCollectOverflowFromLeadDigit_MinusWithBorrows_ReturnsNegative1() {
+        val result = DigitArray(byteArrayOf(4, 0, 1, 0)) - DigitArray(byteArrayOf(8, 9, 9, 5))
+        assertTrue(result.isLeadDigitOverflowing())
+        assertEquals(-1, result.collectOverflowFromLeadDigit())
     }
 
     @Test
