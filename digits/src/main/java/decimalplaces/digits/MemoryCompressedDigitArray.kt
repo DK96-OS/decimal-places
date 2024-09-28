@@ -13,9 +13,9 @@ class MemoryCompressedDigitArray(
      */
     internal val arraySize: Int = computeArraySizeForDigitCount(digitCount)
 
-    /** An array of digit values.
+    /** The array of compressed digit values.
      */
-    internal val digits: ByteArray
+    private val digits: ByteArray
 
     init {
         if (digitArray.isLeadDigitOverflowing()) {
@@ -49,10 +49,7 @@ class MemoryCompressedDigitArray(
     operator fun get(index: Int): Byte? {
         if (index >= digitCount || index < 0)
             return null
-        val arrayIndex = computeArrayIndex(index)
-        if (arrayIndex < 0)
-            return null
-        val compressedDigits = digits.getOrNull(arrayIndex)?.toInt()
+        val compressedDigits = digits.getOrNull(computeArrayIndex(index))?.toInt()
             ?: return null
         return if (index.isEven())
             compressedDigits.ushr(4).toByte()
@@ -97,5 +94,12 @@ class MemoryCompressedDigitArray(
 
     override fun hashCode()
         : Int = digits.contentHashCode()
+
+    /** Expand the DigitArray.
+     * @return A regular DigitArray.
+     */
+    fun expand(): DigitArray {
+        return DigitArray(ByteArray(digitCount) { get(it)!! })
+    }
 
 }
