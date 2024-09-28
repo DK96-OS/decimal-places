@@ -9,7 +9,6 @@ import org.junit.jupiter.api.assertThrows
 
 class MemoryCompressedDigitArrayTest {
 
-
     private lateinit var regularDigitArray: DigitArray
     private lateinit var mInstance: MemoryCompressedDigitArray
 
@@ -43,6 +42,15 @@ class MemoryCompressedDigitArrayTest {
         )
         assertEquals(
             4, regularDigitArray.digits.size
+        )
+    }
+
+    @Test
+    fun testArraySize_EmptyArray_ReturnsZero() {
+        val emptyDigitArray = DigitArray(byteArrayOf())
+        val emptyCompressedDigitArray = MemoryCompressedDigitArray(emptyDigitArray)
+        assertEquals(
+            0, emptyCompressedDigitArray.arraySize
         )
     }
 
@@ -143,6 +151,14 @@ class MemoryCompressedDigitArrayTest {
     }
 
     @Test
+    fun testSet_Index2_Value1() {
+        mInstance[2] = 1
+        assertEquals(
+            "461", mInstance.toString()
+        )
+    }
+
+    @Test
     fun testToString_InitialCondition_SameAsRegularDigitArray() {
         assertEquals(
             regularDigitArray.toString(),
@@ -200,6 +216,30 @@ class MemoryCompressedDigitArrayTest {
     fun testHashCode_InitialCondition_ReturnsStable() {
         assertEquals(
             3163, mInstance.hashCode()
+        )
+    }
+
+    @Test
+    fun testExpand_InitialCondition_ReturnsRegularDigitArray() {
+        assertEquals(
+            regularDigitArray, mInstance.expand()
+        )
+    }
+
+    @Test
+    fun testExpand_Alternative_ReturnsRegularDigitArray() {
+        setupAlternative()
+        assertEquals(
+            regularDigitArray, mInstance.expand()
+        )
+    }
+
+    @Test
+    fun testExpand_EmptyArray_ReturnsEmpty() {
+        regularDigitArray = DigitArray(byteArrayOf())
+        mInstance = MemoryCompressedDigitArray(regularDigitArray)
+        assertEquals(
+            regularDigitArray, mInstance.expand()
         )
     }
 
