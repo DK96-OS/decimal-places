@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class TestDigitArray {
 
@@ -59,6 +60,46 @@ class TestDigitArray {
             DigitArray(byteArrayOf(3, 7, 4)),
             mInstance
         )
+    }
+
+    @Test
+    fun testSet_Index0_Value0_UpdatesDigits() {
+        mInstance[0] = 0
+        assertEquals("094", mInstance.toString())
+    }
+
+    @Test
+    fun testSet_Index1_Value0_UpdatesDigits() {
+        mInstance[1] = 0
+        assertEquals("304", mInstance.toString())
+    }
+
+    @Test
+    fun testSet_NegativeIndex_Value0_UpdatesDigits() {
+        assertThrows<IndexOutOfBoundsException> {
+            mInstance[-1] = 5
+        }
+    }
+
+    @Test
+    fun testSet_IndexOutOfBounds_ThrowsIndexOutOfBoundsException() {
+        assertThrows<IndexOutOfBoundsException> {
+            mInstance[10] = 5
+        }
+    }
+
+    @Test
+    fun testSet_Index0_NegativeValue_ThrowsIllegalArgumentsException() {
+        assertThrows<IllegalArgumentException> {
+            mInstance[0] = -1
+        }
+    }
+
+    @Test
+    fun testSet_Index0_LargeValue_ThrowsIllegalArgumentsException() {
+        assertThrows<IllegalArgumentException> {
+            mInstance[0] = 20
+        }
     }
 
     @Test
@@ -483,6 +524,13 @@ class TestDigitArray {
         val result = DigitArray.fromString(maxLongString)
         assertEquals(
             maxLongString, result.toString()
+        )
+    }
+
+    @Test
+    fun testHashCode_InitialCondition_ReturnsStable() {
+        assertEquals(
+            32957, mInstance.hashCode()
         )
     }
 
