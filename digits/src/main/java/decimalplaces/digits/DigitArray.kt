@@ -151,4 +151,9 @@ class DigitArray(
         return DigitArray(byteArrayOf(0))
     }
 
+    operator fun times(other: Int): DigitArray {
+        //todo:
+        return this
+    }
+
 }
