@@ -3,21 +3,66 @@ package decimalplaces.digits
 /** Manages an Array of Digits.
  */
 class MemoryCompressedDigitArray(
-    /** A bit used by the Lead Digit, especially after a subtraction operation.
-     */
-    val leadDigitBit: Boolean = false,
-    /** An array of digit values.
-     */
-    val digits: ByteArray,
+    digitArray: DigitArray,
 ) {
+
+    /** A flag indicating whether there is an overflow from the lead digit.
+     */
+    val hasLeadDigitOverflow: Boolean = false
+
+    /** The Number of Digits.
+     */
+    val digitCount: Int = digitArray.size
+
     /** The Size of the Array.
      */
-    val size: Int = digits.size
+    val arraySize: Int = computeArraySizeForDigitCount(digitCount)
 
-    operator fun get(index: Int): Byte {
-        require(index >= 0 && index < digits.size)
-        digits
-        return digits[index]
+    /** An array of digit values.
+     */
+    val digits: ByteArray
+
+    init {
+        if (digitArray.isLeadDigitOverflowing()) {
+            throw IllegalArgumentException(
+                "Remove Lead Digit Overflow Before Compressing DigitArray."
+            )
+            //todo: Transfer Lead Digit Overflow Into Compressed DigitArray
+        }
+        digits = ByteArray(arraySize) {
+            val digitIndex = it * 2
+            val even = digitArray.digits.getOrNull(digitIndex)
+                ?: return@ByteArray 0
+            even.toInt().shl(4)
+                .plus(digitArray.digits.getOrNull(digitIndex + 1) ?: 0)
+                .toByte()
+        }
+    }
+
+    companion object {
+        internal fun computeArraySizeForDigitCount(count: Int): Int {
+            if (count < 1) return 0
+            return (count + 1) / 2
+        }
+
+        internal fun computeArrayIndex(digitIndex: Int): Int {
+            val arrayIndex = digitIndex / 2
+            return arrayIndex
+        }
+
+        internal fun Int.isEven(): Boolean {
+            return takeLowestOneBit() != 1
+        }
+    }
+
+    operator fun get(index: Int): Byte? {
+        require(index in 0..< digitCount)
+        val arrayIndex = computeArrayIndex(index)
+        val compressedByte = digits.getOrNull(arrayIndex) ?: return null
+        return if (index.isEven())
+            compressedByte.toInt().ushr(4).toByte()
+        else
+            compressedByte.toInt().shl(28).ushr(28).toByte()
     }
 
     override fun toString()
@@ -25,7 +70,7 @@ class MemoryCompressedDigitArray(
 
     override fun equals(other: Any?): Boolean {
         if (other !is MemoryCompressedDigitArray) return false
-        return this.leadDigitBit == other.leadDigitBit &&
+        return this.hasLeadDigitOverflow == other.hasLeadDigitOverflow &&
                 this.digits.contentEquals(other.digits)
     }
 
@@ -55,13 +100,13 @@ class MemoryCompressedDigitArray(
                 result[i] = (digitValue % 10).toByte()
             }
         }
-        return MemoryCompressedDigitArray(result)
+        return MemoryCompressedDigitArray(DigitArray(result))
     }
 
     fun isLeadDigitOverflowing(
         results: ByteArray = digits,
     ) : Boolean {
-        if (leadDigitBit) return true
+        if (hasLeadDigitOverflow) return true
         return results[0] > 9 || results[0] < 0
     }
 
@@ -106,7 +151,7 @@ class MemoryCompressedDigitArray(
                 }
             } else diff).toByte()
         }
-        return MemoryCompressedDigitArray(result)
+        return MemoryCompressedDigitArray(DigitArray(result))
     }
 
     /** Find an index that can be borrowed from.
@@ -133,28 +178,28 @@ class MemoryCompressedDigitArray(
         for (trimIndex in initialSize downTo 1) {
             if (digits[trimIndex] != 0.toByte()) {
                 return if (trimIndex < initialSize) {
-                    MemoryCompressedDigitArray(digits.copyOf(trimIndex + 1))
+                    MemoryCompressedDigitArray(DigitArray(digits.copyOf(trimIndex + 1)))
                 } else
                     this
             }
         }
-        return MemoryCompressedDigitArray(byteArrayOf(0))
+        return MemoryCompressedDigitArray(DigitArray(byteArrayOf(0)))
     }
 
     /** Remove the Leading Zeros at the start of the Array.
      */
     fun trimLeadingZeros()
         : MemoryCompressedDigitArray {
-        val initialZerothIndex = size - 1
+        val initialZerothIndex = arraySize - 1
         for (trimIndex in digits.indices) {
             if (digits[trimIndex] != 0.toByte()) {
                 return if (trimIndex < initialZerothIndex) {
-                    MemoryCompressedDigitArray(digits.copyOfRange(trimIndex, size))
+                    MemoryCompressedDigitArray(DigitArray(digits.copyOfRange(trimIndex, arraySize)))
                 } else
                     this
             }
         }
-        return MemoryCompressedDigitArray(byteArrayOf(0))
+        return MemoryCompressedDigitArray(DigitArray(byteArrayOf(0)))
     }
 
 }
