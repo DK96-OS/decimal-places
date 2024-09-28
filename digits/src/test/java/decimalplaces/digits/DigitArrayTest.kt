@@ -438,4 +438,36 @@ class TestDigitArray {
         assertEquals(0, mInstance.digits[0])
     }
 
+    @Test
+    fun testTimesInt_InitialCondition_By2_Returns788() {
+        val result = mInstance * 2
+        assertEquals(
+            "788", result.toString()
+        )
+    }
+
+    @Test
+    fun testTimesInt_InitialCondition_ByMaxByte_ReturnsValue() {
+        val result = mInstance * Byte.MAX_VALUE.toInt()
+        assertEquals(
+            "50038", result.toString()
+        )
+    }
+
+    @Test
+    fun testTimesInt_InitialCondition_ByMaxShort_ReturnsValue() {
+        val result = mInstance * Byte.MAX_VALUE.toInt()
+        assertEquals(
+            "12874738", result.toString()
+        )
+    }
+
+    @Test
+    fun testTimesInt_InitialCondition_ByMaxInt_ReturnsValue() {
+        val result = mInstance * Byte.MAX_VALUE.toInt()
+        assertEquals(
+            "846108556918", result.toString()
+        )
+    }
+
 }
