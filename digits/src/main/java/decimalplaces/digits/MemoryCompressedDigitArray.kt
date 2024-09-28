@@ -25,10 +25,9 @@ class MemoryCompressedDigitArray(
         }
         digits = ByteArray(arraySize) {
             val digitIndex = it * 2
-            val even = digitArray.digits.getOrNull(digitIndex)
-                ?: return@ByteArray 0
             mergeDigits(
-                even, digitArray.digits.getOrNull(digitIndex + 1) ?: 0
+                even = digitArray.digits.getOrElse(digitIndex) { 0 },
+                odd = digitArray.digits.getOrNull(digitIndex + 1) ?: 0
             )
         }
     }
@@ -66,7 +65,7 @@ class MemoryCompressedDigitArray(
             throw IllegalArgumentException("Must set a single Digit non-negative value.")
         }
         if (index < 0 || index >= digitCount)
-            throw IllegalArgumentException("Invalid index: $index")
+            throw IndexOutOfBoundsException("Invalid index: $index")
         val arrayIndex = computeArrayIndex(index)
         val compressedValue = digits[arrayIndex].toInt()
         //
