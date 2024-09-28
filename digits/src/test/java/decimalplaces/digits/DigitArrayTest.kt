@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class TestDigitArray {
+class DigitArrayTest {
 
     private lateinit var mInstance: DigitArray
 
