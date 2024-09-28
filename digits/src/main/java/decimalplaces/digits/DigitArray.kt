@@ -69,7 +69,7 @@ class DigitArray(
     fun isLeadDigitOverflowing(
         results: ByteArray = digits,
     ) : Boolean {
-        return results[0] > 9 || results[0] < 0
+        return results.isNotEmpty() && (results[0] > 9 || results[0] < 0)
     }
 
     /** Obtain the Overflow Value from the Lead Digit.
