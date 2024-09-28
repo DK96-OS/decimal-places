@@ -438,4 +438,52 @@ class TestDigitArray {
         assertEquals(0, mInstance.digits[0])
     }
 
+    @Test
+    fun testFromInteger_SameAs_InitialCondition_IsEqual() {
+        assertEquals(
+            mInstance, DigitArray.fromInteger(394)
+        )
+    }
+
+    @Test
+    fun testFromInteger_0_ReturnsSingleDigitArray() {
+        val result = DigitArray.fromInteger(0)
+        assertEquals(1, result.size)
+        assertEquals("0", result.toString())
+    }
+
+
+    @Test
+    fun testFromInteger_MaxValue_ReturnsMaxValueDigitArray() {
+        val result = DigitArray.fromInteger(Integer.MAX_VALUE)
+        assertEquals(10, result.size)
+        assertEquals(
+            Integer.MAX_VALUE.toString(),
+            result.toString()
+        )
+    }
+
+    @Test
+    fun testFromString_SameAs_InitialCondition_IsEqual() {
+        assertEquals(
+            mInstance, DigitArray.fromString("394")
+        )
+    }
+
+    @Test
+    fun testFromString_0_ReturnsSameAsFromInteger0() {
+        assertEquals(
+            DigitArray.fromInteger(0), DigitArray.fromString("0")
+        )
+    }
+
+    @Test
+    fun testFromString_MaxLongValue_ReturnsMaxLong() {
+        val maxLongString = Long.MAX_VALUE.toString()
+        val result = DigitArray.fromString(maxLongString)
+        assertEquals(
+            maxLongString, result.toString()
+        )
+    }
+
 }
