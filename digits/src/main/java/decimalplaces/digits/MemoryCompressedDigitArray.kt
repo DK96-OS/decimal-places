@@ -48,7 +48,12 @@ class MemoryCompressedDigitArray(
     }
 
     operator fun get(index: Int): Byte? {
-        val compressedDigits = digits.getOrNull(computeArrayIndex(index))?.toInt()
+        if (index >= digitCount || index < 0)
+            return null
+        val arrayIndex = computeArrayIndex(index)
+        if (arrayIndex < 0)
+            return null
+        val compressedDigits = digits.getOrNull(arrayIndex)?.toInt()
             ?: return null
         return if (index.isEven())
             compressedDigits.ushr(4).toByte()
@@ -60,29 +65,27 @@ class MemoryCompressedDigitArray(
         if (digit < 0 || digit > 9) {
             throw IllegalArgumentException("Must set a single Digit non-negative value.")
         }
-        val arrayIndex = computeArrayIndex(index)
-        if (arrayIndex < 0)
+        if (index < 0 || index >= digitCount)
             throw IllegalArgumentException("Invalid index: $index")
-        //
+        val arrayIndex = computeArrayIndex(index)
         val compressedValue = digits[arrayIndex].toInt()
-        if (index.isEven()) {
-            val odd = if (index + 1 < digitCount) {
+        //
+        digits[arrayIndex] = if (index.isEven()) mergeDigits(
+            even = digit,
+            odd = if (index + 1 < digitCount)
                 compressedValue.shl(28).ushr(28).toByte()
-            } else 0
-            digits[arrayIndex] = mergeDigits(digit, odd)
-        } else {
-            val even = compressedValue.shr(4).toByte()
-            digits[arrayIndex] = mergeDigits(even, digit)
-        }
+            else 0
+        )
+        else mergeDigits(
+            even = compressedValue.shr(4).toByte(),
+            odd = digit
+        )
     }
 
     override fun toString(): String {
         val builder = StringBuilder()
-        for (compressedDigit in digits) {
-            val integer = compressedDigit.toInt()
-            builder.append(integer.shr(4))
-            if (digitCount.isEven()) continue
-            builder.append(integer.shl(28).shr(28))
+        for (i in 0 until digitCount) {
+            builder.append(get(i))
         }
         return builder.toString()
     }
