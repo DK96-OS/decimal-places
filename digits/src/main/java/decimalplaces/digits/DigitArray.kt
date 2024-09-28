@@ -11,9 +11,22 @@ class DigitArray(
      */
     val size: Int = digits.size
 
-    operator fun get(index: Int): Byte {
-        require(index >= 0 && index < digits.size)
-        return digits[index]
+    /** The number of Digits.
+     */
+    val digitCount: Int = size
+
+    operator fun get(index: Int): Byte? {
+        return digits.getOrNull(index)
+    }
+
+    operator fun set(index: Int, value: Byte) {
+        if (index < 0 || index >= digitCount)
+            throw IndexOutOfBoundsException()
+        if (value < 0 || value > 9)
+            throw IllegalArgumentException(
+                "The Value must be a single digit non-negative number."
+            )
+        digits[index] = value
     }
 
     override fun toString()
@@ -149,6 +162,36 @@ class DigitArray(
             }
         }
         return DigitArray(byteArrayOf(0))
+    }
+
+    companion object {
+        /** Construct a Digit Array from an Integer.
+         * Note that integers cannot produce DigitArrays with leading zeros.
+         * @param integer The Integer to be translated into a DigitArray.
+         * @return The DigitArray containing the base 10 digits of the Integer.
+         */
+        fun fromInteger(integer: Int): DigitArray {
+            val numberString = integer.toString()
+            return DigitArray(ByteArray(numberString.length) {
+                // 48 is the code for 0, and 49 is the code for 1.
+                numberString[it].code.minus(48).toByte()
+            })
+        }
+
+        /** Construct a Digit Array from a String.
+         * Filters all characters not within the digit range.
+         * @param value The String to be translated into a DigitArray.
+         * @return The DigitArray containing the base 10 digits of the Integer.
+         */
+        fun fromString(value: String): DigitArray {
+            val numberString = value.chars()
+                .map { (it - 48) }
+                .filter { it > -1 && it < 10 }
+                .toArray()
+            return DigitArray(ByteArray(numberString.size) {
+                numberString[it].toByte()
+            })
+        }
     }
 
 }
