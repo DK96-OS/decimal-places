@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class TestDigitArray {
+class DigitArrayTest {
 
     private lateinit var mInstance: DigitArray
 
@@ -19,6 +19,13 @@ class TestDigitArray {
         mInstance = DigitArray(digits1) + DigitArray(digits2)
     }
 
+    @Test
+    fun testDigitCount_InitialCondition_Returns3() {
+        assertEquals(
+            3, mInstance.digitCount
+        )
+    }
+    
     @Test
     fun accessDigits() {
         assertEquals(mInstance[0], 3.toByte())
@@ -34,12 +41,12 @@ class TestDigitArray {
     }
 
     @Test
-    fun equals_InitialCondition_Self_ReturnsTrue() {
+    fun testEquals_InitialCondition_Self_ReturnsTrue() {
         assertEquals(mInstance, mInstance)
     }
 
     @Test
-    fun equals_InitialCondition_SameValues_ReturnsTrue() {
+    fun testEquals_InitialCondition_SameValues_ReturnsTrue() {
         assertEquals(
             DigitArray(byteArrayOf(3, 9, 4)),
             mInstance
@@ -47,7 +54,7 @@ class TestDigitArray {
     }
 
     @Test
-    fun equals_InitialCondition_DifferentValue1_ReturnsFalse() {
+    fun testEquals_InitialCondition_DifferentValue1_ReturnsFalse() {
         assertNotEquals(
             DigitArray(byteArrayOf(2, 9, 4)),
             mInstance
@@ -55,10 +62,17 @@ class TestDigitArray {
     }
 
     @Test
-    fun equals_InitialCondition_DifferentValue2_ReturnsFalse() {
+    fun testEquals_InitialCondition_DifferentValue2_ReturnsFalse() {
         assertNotEquals(
             DigitArray(byteArrayOf(3, 7, 4)),
             mInstance
+        )
+    }
+
+    @Test
+    fun testEquals_InitialCondition_String_ReturnsFalse() {
+        assertFalse(
+            mInstance.equals(394)
         )
     }
 
@@ -418,7 +432,14 @@ class TestDigitArray {
     }
 
     @Test
-    fun trimTrailingZeros_() {
+    fun testTrimTrailingZeros_InitialCondition_ReturnsUnchanged() {
+        assertEquals(
+            mInstance, mInstance.trimTrailingZeros()
+        )
+    }
+
+    @Test
+    fun testTrimTrailingZeros_() {
         mInstance = DigitArray(byteArrayOf(1, 0))
         mInstance = mInstance.trimTrailingZeros()
         assertEquals(
@@ -427,7 +448,7 @@ class TestDigitArray {
     }
 
     @Test
-    fun trimTrailingZeros_2() {
+    fun testTrimTrailingZeros_2() {
         mInstance = DigitArray(byteArrayOf(1, 0, 2, 0))
         mInstance = mInstance.trimTrailingZeros()
         assertEquals(
@@ -439,7 +460,7 @@ class TestDigitArray {
     }
 
     @Test
-    fun trimTrailingZeros_AllZero3() {
+    fun testTrimTrailingZeros_AllZero3() {
         mInstance = DigitArray(byteArrayOf(0, 0, 0))
         mInstance = mInstance.trimTrailingZeros()
         assertEquals(
@@ -449,7 +470,14 @@ class TestDigitArray {
     }
 
     @Test
-    fun trimLeadingZeros_() {
+    fun testTrimLeadingZeros_InitialCondition_ReturnsUnchanged() {
+        assertEquals(
+            mInstance, mInstance.trimLeadingZeros()
+        )
+    }
+
+    @Test
+    fun testTrimLeadingZeros_() {
         mInstance = DigitArray(byteArrayOf(1, 0))
         mInstance = mInstance.trimLeadingZeros()
         assertEquals(
@@ -458,7 +486,7 @@ class TestDigitArray {
     }
 
     @Test
-    fun trimLeadingZeros_2() {
+    fun testTrimLeadingZeros_2() {
         mInstance = DigitArray(byteArrayOf(0, 1, 2, 0))
         mInstance = mInstance.trimLeadingZeros()
         assertEquals(
@@ -470,7 +498,7 @@ class TestDigitArray {
     }
 
     @Test
-    fun trimLeadingZeros_AllZero3() {
+    fun testTrimLeadingZeros_AllZero3_ReturnsSingleZero() {
         mInstance = DigitArray(byteArrayOf(0, 0, 0))
         mInstance = mInstance.trimLeadingZeros()
         assertEquals(
@@ -524,6 +552,15 @@ class TestDigitArray {
         val result = DigitArray.fromString(maxLongString)
         assertEquals(
             maxLongString, result.toString()
+        )
+    }
+
+    @Test
+    fun testFromString_IncludesAlphabetCharacters_ReturnsFilteredNumbers() {
+        val input = "hello123world456"
+        val result = DigitArray.fromString(input)
+        assertEquals(
+            "123456", result.toString()
         )
     }
 

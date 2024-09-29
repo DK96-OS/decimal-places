@@ -69,7 +69,7 @@ class DigitArray(
     fun isLeadDigitOverflowing(
         results: ByteArray = digits,
     ) : Boolean {
-        return results[0] > 9 || results[0] < 0
+        return results.isNotEmpty() && (results[0] > 9 || results[0] < 0)
     }
 
     /** Obtain the Overflow Value from the Lead Digit.
@@ -134,8 +134,7 @@ class DigitArray(
 
     /** Remove the Trailing Zeros at the end of the Array.
      */
-    fun trimTrailingZeros()
-        : DigitArray {
+    fun trimTrailingZeros(): DigitArray {
         val initialSize = digits.size - 1
         for (trimIndex in initialSize downTo 1) {
             if (digits[trimIndex] != 0.toByte()) {
@@ -150,12 +149,10 @@ class DigitArray(
 
     /** Remove the Leading Zeros at the start of the Array.
      */
-    fun trimLeadingZeros()
-        : DigitArray {
-        val initialZerothIndex = size - 1
+    fun trimLeadingZeros(): DigitArray {
         for (trimIndex in digits.indices) {
             if (digits[trimIndex] != 0.toByte()) {
-                return if (trimIndex < initialZerothIndex) {
+                return if (trimIndex > 0) {
                     DigitArray(digits.copyOfRange(trimIndex, size))
                 } else
                     this
