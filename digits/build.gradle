@@ -20,7 +20,7 @@ publishing {
         maven(MavenPublication) {
             groupId = "io.github.dk96-os.decimal-places"
             artifactId = "digits"
-            version = "0.3.1"
+            version = "0.3.2"
             from components.java
         }
     }
