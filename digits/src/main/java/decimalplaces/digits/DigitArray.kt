@@ -11,9 +11,22 @@ class DigitArray(
      */
     val size: Int = digits.size
 
-    operator fun get(index: Int): Byte {
-        require(index >= 0 && index < digits.size)
-        return digits[index]
+    /** The number of Digits.
+     */
+    val digitCount: Int = size
+
+    operator fun get(index: Int): Byte? {
+        return digits.getOrNull(index)
+    }
+
+    operator fun set(index: Int, value: Byte) {
+        if (index < 0 || index >= digitCount)
+            throw IndexOutOfBoundsException()
+        if (value < 0 || value > 9)
+            throw IllegalArgumentException(
+                "The Value must be a single digit non-negative number."
+            )
+        digits[index] = value
     }
 
     override fun toString()
@@ -56,7 +69,7 @@ class DigitArray(
     fun isLeadDigitOverflowing(
         results: ByteArray = digits,
     ) : Boolean {
-        return results[0] > 9 || results[0] < 0
+        return results.isNotEmpty() && (results[0] > 9 || results[0] < 0)
     }
 
     /** Obtain the Overflow Value from the Lead Digit.
@@ -121,8 +134,7 @@ class DigitArray(
 
     /** Remove the Trailing Zeros at the end of the Array.
      */
-    fun trimTrailingZeros()
-        : DigitArray {
+    fun trimTrailingZeros(): DigitArray {
         val initialSize = digits.size - 1
         for (trimIndex in initialSize downTo 1) {
             if (digits[trimIndex] != 0.toByte()) {
@@ -137,18 +149,46 @@ class DigitArray(
 
     /** Remove the Leading Zeros at the start of the Array.
      */
-    fun trimLeadingZeros()
-        : DigitArray {
-        val initialZerothIndex = size - 1
+    fun trimLeadingZeros(): DigitArray {
         for (trimIndex in digits.indices) {
             if (digits[trimIndex] != 0.toByte()) {
-                return if (trimIndex < initialZerothIndex) {
+                return if (trimIndex > 0) {
                     DigitArray(digits.copyOfRange(trimIndex, size))
                 } else
                     this
             }
         }
         return DigitArray(byteArrayOf(0))
+    }
+
+    companion object {
+        /** Construct a Digit Array from an Integer.
+         * Note that integers cannot produce DigitArrays with leading zeros.
+         * @param integer The Integer to be translated into a DigitArray.
+         * @return The DigitArray containing the base 10 digits of the Integer.
+         */
+        fun fromInteger(integer: Int): DigitArray {
+            val numberString = integer.toString()
+            return DigitArray(ByteArray(numberString.length) {
+                // 48 is the code for 0, and 49 is the code for 1.
+                numberString[it].code.minus(48).toByte()
+            })
+        }
+
+        /** Construct a Digit Array from a String.
+         * Filters all characters not within the digit range.
+         * @param value The String to be translated into a DigitArray.
+         * @return The DigitArray containing the base 10 digits of the Integer.
+         */
+        fun fromString(value: String): DigitArray {
+            val numberString = value.chars()
+                .map { (it - 48) }
+                .filter { it > -1 && it < 10 }
+                .toArray()
+            return DigitArray(ByteArray(numberString.size) {
+                numberString[it].toByte()
+            })
+        }
     }
 
 }
