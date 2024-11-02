@@ -20,14 +20,14 @@ publishing {
         maven(MavenPublication) {
             groupId = "io.github.dk96-os.decimal-places"
             artifactId = "digits"
-            version = "0.3.2"
+            version = "0.3.3"
             from components.java
         }
     }
 }
 
 dependencies {
-    testImplementation platform("org.junit:junit-bom:5.10.2")
+    testImplementation platform("org.junit:junit-bom:5.11.3")
     testImplementation "org.junit.jupiter:junit-jupiter-api"
     testImplementation "org.junit.jupiter:junit-jupiter-params"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
